@@ -1,8 +1,0 @@
-nano /etc/docker/daemon.json
-{ "insecure-registries": ["gitlab.dockerhost.home:5000"] }
-sudo systemctl restart docker
-
-runner,s config.toml
-[runners.docker.registry]
-  insecure = true
-  url = "http://gitlab.dockerhost.home:5000"
