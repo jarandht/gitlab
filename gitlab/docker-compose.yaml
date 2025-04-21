@@ -1,37 +1,38 @@
-version: '3.6'
 services:
   gitlab:
-    image: gitlab/gitlab-ce:latest
+    image: gitlab/gitlab-ce:YOUR TAG See https://hub.docker.com/r/gitlab/gitlab-ce/tags
     container_name: gitlab
-    restart: always
-    hostname: 'gitlab.local.jarand.site'
+    restart: unless-stopped
     environment:
+      TZ: Europe/Oslo
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://gitlab.local.jarand.site'
-        registry_external_url 'http://gitlab.dockerhost.home:5000'
+        external_url ''
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
 
-        gitlab_rails['registry_enabled'] = true
-        gitlab_rails['registry_host'] = "gitlab.dockerhost.home:5000"
-        gitlab_rails['registry_api_url'] = "http://registry:5000"
-        gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
-        gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
         registry['enable'] = true
-        registry['username'] = "registry"
-        registry['group'] = "registry"
-        registry['log_directory'] = "/var/log/gitlab/registry"
+        registry_external_url ''
+        registry_nginx['ssl_certificate'] = "/etc/gitlab/ssl/registry.crt"
+        registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/registry.key"
+        registry_nginx['enable'] = true
+        registry_nginx['listen_port'] = 5005
+        gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
 
-        gitlab_rails['gitlab_shell_ssh_port'] = 2424
+        gitlab_rails['time_zone'] = 'Europe/Oslo'
 
         gitlab_rails['smtp_enable'] = true
-        gitlab_rails['smtp_address'] = "smtp.gmail.com"
+        gitlab_rails['smtp_address'] = ""
         gitlab_rails['smtp_user_name'] = ""
         gitlab_rails['smtp_password'] = ""
-        gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+        gitlab_rails['smtp_domain'] = ""
         gitlab_rails['smtp_enable_starttls_auto'] = true
         gitlab_rails['smtp_port'] = 465
         gitlab_rails['smtp_authentication'] = "login"
-        gitlab_rails['gitlab_email_from'] = 'mail@jarand.site'
-        gitlab_rails['gitlab_email_reply_to'] = '
+        gitlab_rails['gitlab_email_from'] = ''
+        gitlab_rails['gitlab_email_reply_to'] = ''
+
+        gitlab_rails['gitlab_signup_enabled'] = false
+        gitlab_rails['gitlab_shell_ssh_port'] = 0
 
         gitlab_rails['omniauth_enabled'] = true
         gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
@@ -48,13 +49,13 @@ services:
             # ---- This tells GitLab OmniAuth which attribute has the groups ----
             groups_attribute: 'http://schemas.xmlsoap.org/claims/Group',
             # ---- This tells which group to assign users admin permissions -----
-            admin_groups: ['app-gitlab-admin'],
+            admin_groups: [''],
             args: {
               assertion_consumer_service_url: "",
               idp_cert_fingerprint: "",
               idp_sso_target_url: "",
               issuer: "",
-              name_identifier_format: "",
+              name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
               attribute_statements: {
                 email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
                 first_name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
@@ -64,38 +65,8 @@ services:
             }
           }
         ]
-    ports:
-      - '443:443'
-      - '2424:22'
     volumes:
-      - './data/config:/etc/gitlab'
-      - './data/logs:/var/log/gitlab'
-      - './data/data:/var/opt/gitlab'
-    shm_size: '256m'
-
-  registry:
-    image: registry:2
-    container_name: registry
-    restart: always
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
-      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
-    ports:
-      - '5000:5000'
-    volumes:
-      - './registry:/var/lib/registry'
-      - './data/logs:/var/log/gitlab'
-      - './data/data:/var/opt/gitlab'
-    shm_size: '256m'
-
-  registry:
-    image: registry:2
-    container_name: registry
-    restart: always
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
-      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
-    ports:
-      - '5000:5000'
-    volumes:
-      - './registry:/var/lib/registry'
+      - /mnt/gitlab/config:/etc/gitlab
+      - /mnt/gitlab/logs:/var/log/gitlab
+      - /mnt/gitlab/data:/var/opt/gitlab
+      - ./ssl:/etc/gitlab/ssl/
