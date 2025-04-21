@@ -40,8 +40,12 @@ And remove labels
 
 ## Migration/Restore/backup: (copy files over with right file permsisions and user permissions)
 
-Run: gitlab-backup create
+Run: 
+
+gitlab-backup create
+
 /var/opt/gitlab/backup
+
 Copy .tar file
 
 Copy theese form config:
