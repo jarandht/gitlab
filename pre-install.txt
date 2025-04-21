@@ -1,3 +1,0 @@
-nano /etc/docker/daemon.json
-{ "insecure-registries": ["gitlab.dockerhost.home:5000"] }
-sudo systemctl restart docker
