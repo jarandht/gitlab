@@ -1,8 +1,7 @@
 services:
   gitlab:
-    image: gitlab/gitlab-ce:YOUR IMAGE
+    image: gitlab/gitlab-ce:YOUR IMAGE See https://hub.docker.com/r/gitlab/gitlab-ce/tags
     container_name: gitlab
-    restart: unless-stopped
     restart: unless-stopped
     environment:
       TZ: Europe/Osl
@@ -21,10 +20,8 @@ services:
 
         gitlab_rails['smtp_enable'] = true
         gitlab_rails['smtp_address'] = ""
-        gitlab_rails['smtp_address'] = ""
         gitlab_rails['smtp_user_name'] = ""
         gitlab_rails['smtp_password'] = ""
-        gitlab_rails['smtp_domain'] = ""
         gitlab_rails['smtp_domain'] = ""
         gitlab_rails['smtp_enable_starttls_auto'] = true
         gitlab_rails['smtp_port'] = 465
