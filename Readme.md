@@ -1,3 +1,10 @@
+## Tools
+
+Get upgrade path
+
+https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/
+
+
 ## Filesystem
 
 sudo mkfs.xfs /dev/sdb
@@ -51,7 +58,7 @@ https://docs.gitlab.com/administration/packages/container_registry/#use-object-s
       - '443:443'
       - '5005:5005'
 
-And remove labels
+And remove labels and proxy network
 
 
 
