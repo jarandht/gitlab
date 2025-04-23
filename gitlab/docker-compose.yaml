@@ -3,6 +3,7 @@ services:
     image: gitlab/gitlab-ce:YOUR IMAGE
     container_name: gitlab
     restart: unless-stopped
+    restart: unless-stopped
     environment:
       TZ: Europe/Osl
       GITLAB_OMNIBUS_CONFIG: |
@@ -20,8 +21,10 @@ services:
 
         gitlab_rails['smtp_enable'] = true
         gitlab_rails['smtp_address'] = ""
+        gitlab_rails['smtp_address'] = ""
         gitlab_rails['smtp_user_name'] = ""
         gitlab_rails['smtp_password'] = ""
+        gitlab_rails['smtp_domain'] = ""
         gitlab_rails['smtp_domain'] = ""
         gitlab_rails['smtp_enable_starttls_auto'] = true
         gitlab_rails['smtp_port'] = 465
@@ -47,13 +50,13 @@ services:
             # ---- This tells GitLab OmniAuth which attribute has the groups ----
             groups_attribute: 'http://schemas.xmlsoap.org/claims/Group',
             # ---- This tells which group to assign users admin permissions -----
-            admin_groups: ['app-gitlab-admin'],
+            admin_groups: [''],
             args: {
               assertion_consumer_service_url: "",
               idp_cert_fingerprint: "",
               idp_sso_target_url: "",
               issuer: "",
-              name_identifier_format: "",
+              name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
               attribute_statements: {
                 email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
                 first_name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
